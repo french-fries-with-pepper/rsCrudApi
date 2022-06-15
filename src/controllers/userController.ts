@@ -1,6 +1,7 @@
 import http from "http";
-import { getAllUsers, addNewUser } from "../models/userModel.js";
-
+import User from "../models/UserInterface.js";
+import { getAllUsers, addNewUser, getUserById } from "../models/userModel.js";
+import isUuid from "../utils/isUuid.js";
 export default class UserController {
   // Route /api/users
   // Method GET
@@ -29,6 +30,34 @@ export default class UserController {
         .catch((err) => {
           res.writeHead(400, { contentType: "application/json" });
           res.end(JSON.stringify({ msg: err.message }));
+        });
+    });
+  }
+
+  // Route /api/users/:id
+  // Method GET
+  public static getUser(
+    req: http.IncomingMessage,
+    res: http.ServerResponse,
+    id: string
+  ): void {
+    this.isUserExist(res, id).then((user) => {
+      res.writeHead(200, { contentType: "application/json" });
+      res.end(JSON.stringify(user));
+    });
+  }
+
+  static isUserExist(res: http.ServerResponse, id: string): Promise<User> {
+    return new Promise((resolve, reject) => {
+      if (!isUuid(id)) {
+        res.writeHead(400, { contentType: "application/json" });
+        res.end(JSON.stringify({ msg: "Recived user id is not a valid uuid" }));
+      }
+      getUserById(id)
+        .then((user) => resolve(user))
+        .catch(() => {
+          res.writeHead(404, { contentType: "application/json" });
+          res.end(JSON.stringify({ msg: "Recived user id not found" }));
         });
     });
   }

@@ -5,6 +5,14 @@ export const getAllUsers = (): User[] => {
   return users;
 };
 
+export const getUserById = (id: string):Promise<User> => {
+    return new Promise((resolve, reject) => {
+        const result = users.find(user => user.id === id)
+        if(!result)throw new Error;
+        resolve(result);
+    })
+}
+
 export const addNewUser = (user: User): Promise<User> => {
   return new Promise<User>((resolve, reject) => {
     try {
