@@ -12,7 +12,7 @@ export default class UserController {
   // Route /api/users
   // Method GET
   public static getUsers(res: http.ServerResponse): void {
-    res.writeHead(200, { contentType: "application/json" });
+    res.writeHead(200, { "content-type": "application/json" });
     res.end(JSON.stringify(getAllUsers()));
   }
 
@@ -27,14 +27,22 @@ export default class UserController {
       body += data.toString();
     });
     req.on("end", () => {
-      const user = JSON.parse(body);
+      let user;
+      try {
+        user = JSON.parse(body);
+      } catch {
+        res.writeHead(500, { "content-type": "application/json" });
+        res.end(
+          JSON.stringify({ msg: "Error! Can't parse JSON from request." })
+        );
+      }
       addNewUser(user)
         .then((result) => {
-          res.writeHead(201, { contentType: "application/json" });
+          res.writeHead(201, { "content-type": "application/json" });
           res.end(JSON.stringify(result));
         })
         .catch((err) => {
-          res.writeHead(400, { contentType: "application/json" });
+          res.writeHead(400, { "content-type": "application/json" });
           res.end(JSON.stringify({ msg: err.message }));
         });
     });
@@ -48,7 +56,7 @@ export default class UserController {
     id: string
   ): void {
     this.isUserExist(res, id).then((user) => {
-      res.writeHead(200, { contentType: "application/json" });
+      res.writeHead(200, { "content-type": "application/json" });
       res.end(JSON.stringify(user));
     });
   }
@@ -66,9 +74,17 @@ export default class UserController {
         body += data.toString();
       });
       req.on("end", () => {
-        const newUser = JSON.parse(body);
+        let newUser;
+        try {
+          newUser = JSON.parse(body);
+        } catch {
+          res.writeHead(500, { "content-type": "application/json" });
+          res.end(
+            JSON.stringify({ msg: "Error! Can't parse JSON from request." })
+          );
+        }
         updateUserById(id, newUser).then((user) => {
-          res.writeHead(200, { contentType: "application/json" });
+          res.writeHead(200, { "content-type": "application/json" });
           res.end(JSON.stringify(user));
         });
       });
@@ -84,7 +100,7 @@ export default class UserController {
   ): void {
     this.isUserExist(res, id).then(() => {
       deleteUserById(id).then(() => {
-        res.writeHead(204, { contentType: "application/json" });
+        res.writeHead(204, { "content-type": "application/json" });
         res.end();
       });
     });
@@ -93,13 +109,13 @@ export default class UserController {
   static isUserExist(res: http.ServerResponse, id: string): Promise<User> {
     return new Promise((resolve, reject) => {
       if (!isUuid(id)) {
-        res.writeHead(400, { contentType: "application/json" });
+        res.writeHead(400, { "content-type": "application/json" });
         res.end(JSON.stringify({ msg: "Recived user id is not a valid uuid" }));
       }
       getUserById(id)
         .then((user) => resolve(user))
         .catch(() => {
-          res.writeHead(404, { contentType: "application/json" });
+          res.writeHead(404, { "content-type": "application/json" });
           res.end(JSON.stringify({ msg: "Recived user id not found" }));
         });
     });
