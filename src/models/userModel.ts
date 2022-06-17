@@ -35,3 +35,12 @@ export const updateUserById = (id: string, user: User): Promise<User> => {
     return resolve(users[idx]);
   });
 };
+
+export const deleteUserById = (id: string): Promise<void> => {
+  return new Promise<void>((resolve) => {
+    const idx = users.findIndex((el) => el.id === id);
+    if (idx < 0) throw new Error();
+    users.splice(idx, 1);
+    return resolve();
+  });
+};

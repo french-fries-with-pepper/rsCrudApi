@@ -5,6 +5,7 @@ import {
   addNewUser,
   getUserById,
   updateUserById,
+  deleteUserById,
 } from "../models/userModel.js";
 import isUuid from "../utils/isUuid.js";
 export default class UserController {
@@ -81,7 +82,12 @@ export default class UserController {
     res: http.ServerResponse,
     id: string
   ): void {
-    this.isUserExist(res, id).then((user) => {});
+    this.isUserExist(res, id).then(() => {
+      deleteUserById(id).then(() => {
+        res.writeHead(204, { contentType: "application/json" });
+        res.end();
+      });
+    });
   }
 
   static isUserExist(res: http.ServerResponse, id: string): Promise<User> {
