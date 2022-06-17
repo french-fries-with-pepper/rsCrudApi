@@ -19,6 +19,18 @@ const server = http.createServer((req, res) => {
     idUrlPart
   ) {
     UserController.getUser(req, res, idUrlPart);
+  } else if (
+    req.url?.startsWith("/api/users") &&
+    req.method === "PUT" &&
+    idUrlPart
+  ) {
+    UserController.updateUser(req, res, idUrlPart);
+  } else if (
+    req.url?.startsWith("/api/users") &&
+    req.method === "DELETE" &&
+    idUrlPart
+  ) {
+    UserController.deleteUser(req, res, idUrlPart);
   } else {
     res.writeHead(404, { contentType: "application/json" });
     res.end(JSON.stringify({ message: "Unknown route" }));

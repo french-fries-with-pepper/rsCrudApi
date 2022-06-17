@@ -1,6 +1,11 @@
 import http from "http";
 import User from "../models/UserInterface.js";
-import { getAllUsers, addNewUser, getUserById } from "../models/userModel.js";
+import {
+  getAllUsers,
+  addNewUser,
+  getUserById,
+  updateUserById,
+} from "../models/userModel.js";
 import isUuid from "../utils/isUuid.js";
 export default class UserController {
   // Route /api/users
@@ -45,6 +50,38 @@ export default class UserController {
       res.writeHead(200, { contentType: "application/json" });
       res.end(JSON.stringify(user));
     });
+  }
+
+  // Route /api/users/:id
+  // Method PUT
+  public static updateUser(
+    req: http.IncomingMessage,
+    res: http.ServerResponse,
+    id: string
+  ): void {
+    this.isUserExist(res, id).then(() => {
+      let body = "";
+      req.on("data", (data: any) => {
+        body += data.toString();
+      });
+      req.on("end", () => {
+        const newUser = JSON.parse(body);
+        updateUserById(id, newUser).then((user) => {
+          res.writeHead(200, { contentType: "application/json" });
+          res.end(JSON.stringify(user));
+        });
+      });
+    });
+  }
+
+  // Route /api/users/:id
+  // Method DELETE
+  public static deleteUser(
+    req: http.IncomingMessage,
+    res: http.ServerResponse,
+    id: string
+  ): void {
+    this.isUserExist(res, id).then((user) => {});
   }
 
   static isUserExist(res: http.ServerResponse, id: string): Promise<User> {
