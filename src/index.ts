@@ -1,9 +1,9 @@
 import http from "http";
-import UserController from "./controllers/userController.js";
+import UserController from "./controllers/userController";
 import dotenv from "dotenv";
 dotenv.config();
 
-const server = http.createServer((req, res) => {
+export const server = http.createServer((req, res) => {
   let idUrlPart: string;
   if (req.url) {
     const arr = req.url.split("/");

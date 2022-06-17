@@ -8,8 +8,8 @@
   "scripts": {
     "build": "tsc",
     "start:dev": "nodemon --watch './**/*.ts' --exec 'node --experimental-specifier-resolution=node --loader ts-node/esm' src/index.ts",
-    "start:prod": "tsc && node dist/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start:prod": "tsc && node --es-module-specifier-resolution=node dist/index.js",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
@@ -20,9 +20,14 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@types/jest": "^28.1.2",
     "@types/node": "^17.0.42",
+    "@types/supertest": "^2.0.12",
     "@types/uuid": "^8.3.4",
+    "jest": "^28.1.1",
     "nodemon": "^2.0.16",
+    "supertest": "^6.2.3",
+    "ts-jest": "^28.0.5",
     "ts-node": "^10.8.1"
   }
 }

@@ -1,4 +1,4 @@
-import User from "./UserInterface.js";
+import User from "./UserInterface";
 const users: User[] = [];
 
 export const getAllUsers = (): User[] => {

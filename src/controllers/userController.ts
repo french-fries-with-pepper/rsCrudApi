@@ -1,13 +1,13 @@
 import http from "http";
-import User from "../models/UserInterface.js";
+import User from "../models/UserInterface";
 import {
   getAllUsers,
   addNewUser,
   getUserById,
   updateUserById,
   deleteUserById,
-} from "../models/userModel.js";
-import isUuid from "../utils/isUuid.js";
+} from "../models/userModel";
+import isUuid from "../utils/isUuid";
 export default class UserController {
   // Route /api/users
   // Method GET
