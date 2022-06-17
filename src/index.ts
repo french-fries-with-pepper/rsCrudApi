@@ -1,5 +1,7 @@
 import http from "http";
 import UserController from "./controllers/userController.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 const server = http.createServer((req, res) => {
   let idUrlPart: string;
@@ -36,6 +38,6 @@ const server = http.createServer((req, res) => {
     res.end(JSON.stringify({ message: "Unknown route" }));
   }
 });
-console.log("Starting  ...");
-const PORT = process.env.PORT || 3000;
-server.listen(PORT);
+const port = process.env.port || 3000;
+server.listen(port);
+console.log("Swrver working on port " + port);
