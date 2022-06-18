@@ -9,6 +9,7 @@
     "build": "tsc",
     "start:dev": "nodemon --watch './**/*.ts' --exec 'node --experimental-specifier-resolution=node --loader ts-node/esm' src/index.ts",
     "start:prod": "tsc && node --es-module-specifier-resolution=node dist/index.js",
+    "start:multi":"tsc && node --es-module-specifier-resolution=node dist/cluster.js",
     "test": "jest"
   },
   "keywords": [],

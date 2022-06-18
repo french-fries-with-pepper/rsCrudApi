@@ -74,19 +74,36 @@ export default class UserController {
         body += data.toString();
       });
       req.on("end", () => {
-        let newUser;
+        let newUserData;
         try {
-          newUser = JSON.parse(body);
+          newUserData = JSON.parse(body);
         } catch {
           res.writeHead(500, { "content-type": "application/json" });
           res.end(
             JSON.stringify({ msg: "Error! Can't parse JSON from request." })
           );
         }
-        updateUserById(id, newUser).then((user) => {
-          res.writeHead(200, { "content-type": "application/json" });
-          res.end(JSON.stringify(user));
-        });
+        let newUser: User;
+        try {
+          newUser = new User(
+            newUserData.username,
+            newUserData.age,
+            newUserData.hobbies
+          );
+          updateUserById(id, newUser).then((user) => {
+            res.writeHead(200, { "content-type": "application/json" });
+            res.end(JSON.stringify(user));
+          });
+        } catch (err) {
+          res.writeHead(400, { "content-type": "application/json" });
+          let errorMsg: string;
+          if (err instanceof Error) {
+            errorMsg = err.message;
+          } else {
+            errorMsg = "Invalid object!";
+          }
+          res.end(JSON.stringify({ msg: errorMsg }));
+        }
       });
     });
   }
