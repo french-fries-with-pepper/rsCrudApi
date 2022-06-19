@@ -105,3 +105,77 @@ describe("Scenario 2, error handling", () => {
     expect(res.body.msg).toEqual(expect.anything());
   });
 });
+
+describe("Scenario 3, two users, updating testing", () => {
+  const sendingUser1: User = {
+    username: "Carry",
+    age: 46,
+    hobbies: ["1", "2"],
+  };
+  const sendingUser2: User = {
+    username: "Alan",
+    age: 35,
+    hobbies: ["1", "2"],
+  };
+  let id1: string;
+  let id2: string;
+  const updatingUser1: User = {
+    username: "Tom",
+    age: 46,
+    hobbies: ["1", "2"],
+  };
+  const updatingUser2 = {
+    username: "Mike",
+  };
+  it("Get all records with a GET api/users request (an empty array is expected)", async () => {
+    const res = await request(server)
+      .get("/api/users")
+      .set("Accept", "application/json");
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual([]);
+  });
+  it("A new object is created by a POST api/users request (a response containing newly created record is expected)", async () => {
+    const res = await request(server).post("/api/users").send(sendingUser1);
+    expect(res.statusCode).toBe(201);
+    expect(res.body).toMatchObject(sendingUser1);
+    id1 = res.body.id;
+  });
+  it("A new object is created by a POST api/users request (a response containing newly created record is expected)", async () => {
+    const res = await request(server).post("/api/users").send(sendingUser2);
+    expect(res.statusCode).toBe(201);
+    expect(res.body).toMatchObject(sendingUser2);
+    id2 = res.body.id;
+  });
+  it("We try to update the created record with a PUT api/users/{userId}request (a response is expected containing an updated object with the same id)", async () => {
+    const res = await request(server)
+      .put(`/api/users/${id1}`)
+      .send(updatingUser1);
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject(updatingUser1);
+    expect(res.body.id).toBe(id1);
+  });
+  it("We try to update the created record with a PUT, but send invalid object (a response with 400 status is expected containing, cotaining error message)", async () => {
+    const res = await request(server)
+      .put(`/api/users/${id2}`)
+      .send(updatingUser2);
+    expect(res.status).toBe(400);
+    expect(res.body.msg).toEqual(expect.anything());
+  });
+  it("With a GET api/user/{userId} request, we try to get unchanged user 2 (the created record is expected)", async () => {
+    const res = await request(server).get(`/api/users/${id2}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toMatchObject(sendingUser2);
+  });
+  it("With a GET api/user/{userId} request, we try to get changed user 1 (the created record is expected)", async () => {
+    const res = await request(server).get(`/api/users/${id1}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toMatchObject(updatingUser1);
+  });
+  it("Get all records with a GET api/users request (array with 2 records is expected)", async () => {
+    const res = await request(server)
+      .get("/api/users")
+      .set("Accept", "application/json");
+    expect(res.status).toBe(200);
+    expect(res.body.length).toEqual(2);
+  });
+});
